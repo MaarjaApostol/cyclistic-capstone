@@ -1,0 +1,201 @@
+## 0. Background
+
+For the purpose of this Capstone Project I am a junior data analyst working on the marketing analyst team at Cyclistic, a bike-share company in Chicago. The director of marketing believes the company’s future success depends on maximising the number of annual memberships. Therefore, the team wants to understand how casual riders and annual members use Cyclistic bikes differently. 
+
+The director of marketing has set a clear goal: Design marketing strategies aimed at converting casual riders into annual members. The marketing team is interested in analysing the Cyclistic historical bike trip data to identify trends.
+
+Three questions will guide the future marketing program:
+1. How do annual members and casual riders use Cyclistic bikes differently?
+2. Why would casual riders buy Cyclistic annual memberships?
+3. How can Cyclistic use digital media to influence casual riders to become members?
+
+I have been assigned the first question to answer: **How do annual members and casual
+riders use Cyclistic bikes differently?**
+
+## 1. Business task
+Determine the difference(s) in usage of Cyclistic by annual members and casual riders. 
+
+## 2. Data source(s)
+
+Data source: [DivvyTripData](https://divvy-tripdata.s3.amazonaws.com/index.html)
+
+Does the data ROCCC?
+**R**eliable - the data has been provided to us directly by the company, therefore it is reliable.
+**O**riginal - the data has been collected directly by the company with no third-party involvement.
+**C**omprehensive - the data contains the information we need (usage time, membership type, hire type) to address the business task.
+**C**urrent - the data used for this analysis is from the past 12 months, November 2023 to October 2024, hence it is current.
+**C**ited - the data has been made available by Motivate International Inc. under [this license](https://divvybikes.com/data-license-agreement).
+
+## 3. Documentation of any cleaning or manipulation of data 
+
+Data cleaning was completed using **Excel**, the data came in 12 separate CSV files.
+### Data cleaning
+
+| Table Name | Initial # of records | Remove duplicates[^1] | Remove columns[^2]<br> | Add columns[^3] | Convert<br>columns                           | Remove records  - errors and outliers[^4]                                                | Check data types | Final # of records |
+| ---------- | -------------------- | --------------------- | ---------------------- | --------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------- | ------------------ |
+| nov_23     | 362518               | none                  | x 8                    | x 2<br><br>     | none                                         | *Total:*<br>6531<br>1.8%<br><br>x 64 errors<br>x 357 over 24h<br>x 6110 under 45s<br>    | [x]              | 355987             |
+| dec_23     | 224073               | none                  | "                      | "               | none                                         | *Total:*<br>3960<br>1.8%<br><br>x 10 errors<br>x 263 over 24h<br>x 3687 under 45s        | [x]              | 220113             |
+| jan_24     | 144873               | none                  | "                      | "               | none                                         | *Total:*<br>3887<br>2.7%<br><br>x 20 errors<br>x 329 over 24h<br>x 3538 under 45s        | [x]              | 140986             |
+| feb_24     | 223164               | none                  | "                      | "               | none                                         | *Total:*<br>3620<br>1.6%<br><br>x 5 errors<br>x 368 over 24h<br>x 3247 under 45s<br><br> | [x]              | 219544             |
+| mar_24     | 301687               | none                  | "                      | "               | none                                         | *Total:*<br>5957<br>2.0%<br><br>x 25 errors<br>x 415 over 24h<br>x 5517 under 45s        | [x]              | 295730             |
+| apr_24     | 415025               | none                  | "                      | "               | none                                         | *Total:*<br>9333<br>2.2%<br><br>x 58 errors<br>x 517 over 24h<br>x 8578 under 45s        | [x]              | 405872             |
+| may_24     | 609493               | none                  | "                      | "               | none                                         | *Total:*<br>14196<br>2.3%<br><br>x 76 errors<br>x 825 over 24h<br>x 13295 under 45s      | [x]              | 595297             |
+| jun_24     | 710721               | none                  | "                      | "               | *started_at<br>ended_at*<br>from mm:ss.0<br> | *Total:*<br>17090<br>2.4%<br><br>x 0 errors<br>x 1179 over 24h<br>x 15911 under 45s      | [x]              | 693631             |
+| jul_24     | 748962               | none                  | "                      | "               | *started_at<br>ended_at*<br>from mm:ss.0     | *Total:*<br>15873<br>2.1%<br><br>x 0 errors<br>x 1121 over 24h<br>x 14752 under 45s      | [x]              | 733089             |
+| aug_24     | 755639               | none                  | "                      | "               | *started_at<br>ended_at*<br>from mm:ss.0     | *Total:*<br>16255<br>2.2%<br><br>x 0 errors<br>x 1050 over 24h<br>x 15205 under 45s      | [x]              | 739384             |
+| sep_24     | 821276               | none                  | "                      | "               | *started_at<br>ended_at*<br>from mm:ss.0     | *Total:*<br>18773<br>2.3% <br><br>x 0 errors<br>x 783 over 24h <br>x 17990 under 45s     | [x]              | 802503             |
+| oct_24     | 616281               | none                  | "                      | "               | *started_at<br>ended_at*<br>from mm:ss.0     | *Total:*<br>10272<br>1.7% <br><br>x 0 errors<br>x 594 over 24h<br>x 9678 under 45s       | [x]              | 606009             |
+[^1]: based on *ride_id* column
+[^2]: these columns were determined as not necessary for this analysis so were removed to save space and to speed up CSV upload (*start_station_name, start_station_id, end_station_name, end_station_id, start_lat, start_lng, end_lat, end_lng*)
+[^3]: added *ride_length*- to calculate the length of the rides and *weekday* - to determine which weekday the hire started on
+[^4]: outliers set as <45s and >24h on column *ride_length*. <45s was based on start and end stations being the same, potentially indicating no actual movement of the bikes. >24h were removed as the ride lengths were too uniform, potentially indicating automatic or system-forced ends to rides.
+
+### Data type check in BigQuery
+
+All 12 CSVs were uploaded to BigQuery to combine into one master table using *UNION ALL*.
+
+| Column Name<br><br><br>Table Name | **ride_<br>id** | **rideable_<br>type** | **started_<br>at** | **ended_<br>at** | **member_<br>casual** | **ride_<br>length** | weekday |
+| --------------------------------- | --------------- | --------------------- | ------------------ | ---------------- | --------------------- | ------------------- | ------- |
+| nov_23                            | string          | string                | datetime           | datetime         | string                | time                | int     |
+| dec_23                            | string          | string                | datetime           | datetime         | string                | time                | int     |
+| jan_24                            | string          | string                | datetime           | datetime         | string                | time                | int     |
+| feb_24                            | string          | string                | datetime           | datetime         | string                | time                | int     |
+| mar_24                            | string          | string                | datetime           | datetime         | string                | time                | int     |
+| apr_24                            | string          | string                | datetime           | datetime         | string                | time                | int     |
+| may_24                            | string          | string                | datetime           | datetime         | string                | time                | int     |
+| jun_24                            | string          | string                | datetime           | datetime         | string                | time                | int     |
+| jul_24                            | string          | string                | datetime           | datetime         | string                | time                | int     |
+| aug_24                            | string          | string                | datetime           | datetime         | string                | time                | int     |
+| sep_24                            | string          | string                | datetime           | datetime         | string                | time                | int     |
+| oct_24                            | string          | string                | datetime           | datetime         | string                | time                | int     |
+#### Final result:
+| Number of rows    | 5,808,145 |
+| ----------------- | --------- |
+| DISTINCT ride_id  | 5,807,977 |
+| Duplicate records | 168       |
+## 4. Analysis
+
+The following queries were run **BigQuery** to extract meaningful information from the dataset. 
+
+- user type and day 
+~~~
+SELECT
+	weekday,
+	member_casual,
+	count(*) as number_of_hires
+FROM 
+	 (
+    SELECT 
+	    DISTINCT ride_id,
+        weekday,
+	    member_casual,
+    FROM `minu-esimene-project.cyclistic_project.cyclistic_merge`
+    )
+GROUP BY 
+	weekday, 
+	member_casual
+ORDER BY 
+	weekday, 
+	member_casual;
+~~~
+
+- user type and month
+~~~
+SELECT
+  member_casual,
+  EXTRACT (MONTH from started_at) AS month_of_hire,
+  count(*) as number_of_hires,
+FROM
+  (
+    SELECT
+        DISTINCT ride_id,
+        started_at,
+        member_casual,
+    FROM `minu-esimene-project.cyclistic_project.cyclistic_merge`
+  )
+GROUP BY
+  member_casual,
+  month_of_hire
+ORDER BY
+  member_casual,
+  month_of_hire
+~~~
+
+- user type and rideable type
+~~~
+SELECT
+  rideable_type,
+  member_casual,
+  count(*) as number_of_hires
+FROM 
+	(
+	SELECT
+		DISTINCT ride_id,
+		rideable_type,
+		member_casual,
+    FROM `minu-esimene-project.cyclistic_project.cyclistic_merge`
+    )
+GROUP BY
+  member_casual,
+  rideable_type
+ORDER BY
+  member_casual,
+  rideable_type
+~~~
+
+- ride averages by ride length and user type
+~~~
+SELECT
+  member_casual,
+  AVG(ended_at - started_at)
+FROM
+	(
+	  SELECT 
+	      DISTINCT ride_id,
+	      started_at,
+	      ended_at,
+	      member_casual,
+	  FROM `minu-esimene-project.cyclistic_project.cyclistic_merge`
+	)
+GROUP BY member_casual
+~~~
+
+- ride averages by month and user type
+~~~
+SELECT
+  member_casual,
+  EXTRACT (MONTH from started_at) AS month_of_hire,
+  AVG(ended_at - started_at)
+FROM
+	(
+	  SELECT 
+	      DISTINCT ride_id,
+	      started_at,
+	      ended_at,
+	      member_casual,
+	  FROM `minu-esimene-project.cyclistic_project.cyclistic_merge`
+	)
+GROUP BY month_of_hire, member_casual
+ORDER BY month_of_hire, member_casual
+~~~
+
+- user type and time of day comparison 
+~~~
+SELECT
+  member_casual,
+  EXTRACT (HOUR from started_at) AS hour_of_hire,
+  COUNT(*) AS ride_count
+FROM
+  (
+    SELECT
+        DISTINCT ride_id,
+        started_at,
+        member_casual,
+    FROM `minu-esimene-project.cyclistic_project.cyclistic_merge`
+  )
+GROUP BY hour_of_hire, member_casual
+ORDER BY hour_of_hire, member_casual
+~~~
+
+
+
