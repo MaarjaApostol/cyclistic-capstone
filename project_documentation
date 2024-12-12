@@ -1,4 +1,4 @@
-## 0. Background
+## Background
 
 For the purpose of this Capstone Project I am a junior data analyst working on the marketing analyst team at Cyclistic, a bike-share company in Chicago. The director of marketing believes the company’s future success depends on maximising the number of annual memberships. Therefore, the team wants to understand how casual riders and annual members use Cyclistic bikes differently. 
 
@@ -19,11 +19,16 @@ Determine the difference(s) in usage of Cyclistic by annual members and casual r
 
 Data source: [DivvyTripData](https://divvy-tripdata.s3.amazonaws.com/index.html)
 
-Does the data ROCCC?
+Does the data **ROCCC**?
+
 **R**eliable - the data has been provided to us directly by the company, therefore it is reliable.
+
 **O**riginal - the data has been collected directly by the company with no third-party involvement.
+
 **C**omprehensive - the data contains the information we need (usage time, membership type, hire type) to address the business task.
+
 **C**urrent - the data used for this analysis is from the past 12 months, November 2023 to October 2024, hence it is current.
+
 **C**ited - the data has been made available by Motivate International Inc. under [this license](https://divvybikes.com/data-license-agreement).
 
 ## 3. Documentation of any cleaning or manipulation of data 
@@ -45,10 +50,14 @@ Data cleaning was completed using **Excel**, the data came in 12 separate CSV fi
 | aug_24     | 755639               | none                  | "                      | "               | *started_at<br>ended_at*<br>from mm:ss.0     | *Total:*<br>16255<br>2.2%<br><br>x 0 errors<br>x 1050 over 24h<br>x 15205 under 45s      | [x]              | 739384             |
 | sep_24     | 821276               | none                  | "                      | "               | *started_at<br>ended_at*<br>from mm:ss.0     | *Total:*<br>18773<br>2.3% <br><br>x 0 errors<br>x 783 over 24h <br>x 17990 under 45s     | [x]              | 802503             |
 | oct_24     | 616281               | none                  | "                      | "               | *started_at<br>ended_at*<br>from mm:ss.0     | *Total:*<br>10272<br>1.7% <br><br>x 0 errors<br>x 594 over 24h<br>x 9678 under 45s       | [x]              | 606009             |
+
 [^1]: based on *ride_id* column
+
 [^2]: these columns were determined as not necessary for this analysis so were removed to save space and to speed up CSV upload (*start_station_name, start_station_id, end_station_name, end_station_id, start_lat, start_lng, end_lat, end_lng*)
+
 [^3]: added *ride_length*- to calculate the length of the rides and *weekday* - to determine which weekday the hire started on
-[^4]: outliers set as <45s and >24h on column *ride_length*. <45s was based on start and end stations being the same, potentially indicating no actual movement of the bikes. >24h were removed as the ride lengths were too uniform, potentially indicating automatic or system-forced ends to rides.
+
+[^4]: outliers set as <45s and >24h on column *ride_length*. <45s was based on start and end stations being the same, potentially indicating no actual movement of the bikes. >24h were removed as the ride lengths were too uniform, potentially indicating automatic or system-forced ends to rides
 
 ### Data type check in BigQuery
 
